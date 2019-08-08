@@ -1,6 +1,8 @@
 package com.dbs.springmvcapp.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -16,12 +18,14 @@ public class Employee implements Serializable, Comparable<Employee> {
     private long id;
 
     @Column(name = "emp_name")
+    @NotBlank(message = "Name cannot be null")
     private String name;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     @Column(name = "department_name")
+    @NotBlank(message = "dept cannot be null")
     private String departmentName;
     
     @OneToOne(cascade = CascadeType.ALL)

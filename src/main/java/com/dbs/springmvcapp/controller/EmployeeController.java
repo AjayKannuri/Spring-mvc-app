@@ -3,7 +3,10 @@ package com.dbs.springmvcapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +17,7 @@ import com.dbs.springmvcapp.model.Address;
 import com.dbs.springmvcapp.model.Employee;
 import com.dbs.springmvcapp.service.EmployeeService;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,6 +28,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Controller
 public class EmployeeController {
@@ -89,6 +94,25 @@ public class EmployeeController {
 		return "dashboard";
 	}
 	
+//	@RequestMapping("/register")
+//    public String showRegistrationForm(Model model){
+//        model.addAttribute("employee", new Employee());
+//        return "register";
+//    }
+//	@RequestMapping("/registerUser")
+//    public String registerUser( @Valid @ModelAttribute("employee") Employee employee,
+//                                BindingResult bindingResult) throws IOException {
+//        if(bindingResult.hasErrors()){
+//            System.out.println("Error "+bindingResult.toString());
+//            return "register";
+//            //throw  new ArithmeticException("Exception occurred");
+//				throw new IOException("Exception while registering Employee");
+//        }
+//
+//        this.employeeService.saveEmployee(employee);
+//        return "dashboard";
+//    }
+	
 	@RequestMapping("/register")
 	public String register(Model model)
 	{
@@ -108,8 +132,8 @@ public class EmployeeController {
 		String DOB =req.getParameter("DOB");
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate localDateObj = LocalDate.parse(DOB, dateTimeFormatter);
-//		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-//		LocalDate localDate = LocalDate.parse(DOB);
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+		LocalDate localDate = LocalDate.parse(DOB);
 		Employee e1 = new Employee();
 		e1.setName(name);
 		e1.setDepartmentName(deptName);
@@ -120,6 +144,7 @@ public class EmployeeController {
 		address.setState(state);
 		address.setStreet(street);
 		address.setZip(zipcode);
+		
 		
 		e1.setAddress(address);
 		employeeService.saveEmployee(e1);
@@ -161,6 +186,9 @@ public class EmployeeController {
 		employeeService.saveEmployee(e1);
 		return "dashboard";
 	}
+	
+	@ExceptionHandler(IOException.class)
+	public String handleException(HttpServletRequest request,Exception ex) {return "login";}
 	
 	
 }
